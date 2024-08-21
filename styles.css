@@ -1,0 +1,157 @@
+
+body {
+    font-family: Arial, sans-serif;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+.form-wrapper {
+    display: flex;
+    margin-top: 30px;
+    margin-bottom: 150px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-title {
+    text-align: center;
+    margin-bottom: 30px; 
+    font-size: 24px;
+    font-weight: bold;
+    color: #000;
+}
+
+
+
+.button-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.top-button {
+    padding: 15px 15px;
+    font-size: 15px;
+    border-radius: 100%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    width: 20%; 
+}
+
+.top-button:hover {
+    background-color: #0056b3;
+}
+
+#browse-btn {
+    position: relative;
+}
+
+#csvFileInput {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+
+
+
+
+
+.form-container {
+    width: 100%;
+    max-width: 1200px; 
+    padding: 20px; 
+    margin: 0 auto;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    background-color: #fff;
+}
+
+
+
+.form-container {
+    width: 80%;
+    max-width: 1200px;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+}
+.row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+.row input[type="text"] {
+    width: 48%; 
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    margin-right: 4%;
+}
+
+.row input[type="text"]:last-child {
+    margin-right: 0; 
+}
+.add-row-btn:hover {
+    background-color: #218838;
+}
+.add-row-btn span {
+    margin-right: 10px;
+    font-size: 20px;
+}
+
+
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.add-row-btn, .remove-row-btn {
+    width: 48%;
+    padding: 10px;
+    margin-top: 15px;
+    font-size: 16px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-row-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.add-row-btn:hover {
+    background-color: #218838;
+}
+
+.remove-row-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.remove-row-btn:hover {
+    background-color: #c82333;
+}
+
+.add-row-btn span, .remove-row-btn span {
+    font-size: 20px;
+}
+
+

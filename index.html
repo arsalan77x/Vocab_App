@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocab App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="form-wrapper">
+    <h2 class="form-title">Vocab App</h2>
+    <div class="button-row">
+        <button class="top-button" id="browse-btn">Load csv</button>
+        <button class="top-button">Button 2</button>
+        <button class="top-button">Button 3</button>
+        <button class="top-button">Button 4</button>
+        <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
+    </div>
+    
+    <div class="form-container">
+        <div id="form-rows">
+            <!-- Dynamically added rows will go here -->
+        </div>
+        <div class="button-container">
+            <button class="add-row-btn" id="add-row-btn">
+                <span>+</span> Add More Rows
+            </button>
+            <button class="remove-row-btn" id="remove-row-btn">
+                <span>−</span> Remove Last Row
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
