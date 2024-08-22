@@ -12,9 +12,9 @@
     <h2 class="form-title">Vocab App</h2>
     <div class="button-row">
         <button class="top-button" id="browse-btn">Load csv</button>
-        <button class="top-button">Button 2</button>
-        <button class="top-button">Button 3</button>
-        <button class="top-button">Button 4</button>
+        <button class="top-button" id="save-btn">Save</button>
+        <button class="top-button" id="shuffle-btn">Shuffle</button>
+        <button class="top-button">Button4</button>
         <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
     </div>
     
@@ -31,7 +31,16 @@
             </button>
         </div>
     </div>
+
+    <div class="pagination-container">
+        <button id="prev-page" class="pagination-btn">&laquo; Prev</button>
+        <div id="pagination-numbers" class="pagination-numbers"></div>
+        <button id="next-page" class="pagination-btn">Next &raquo;</button>
+    </div>
+    
 </div>
+<div id="save-notification">Data saved successfully!</div>
+
 
 <script src="script.js"></script>
 </body>
