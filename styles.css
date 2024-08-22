@@ -5,8 +5,9 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-color: #f0f0f0;
+    background-color: #FDFEFE; /* Light Cream */
 }
+
 .form-wrapper {
     display: flex;
     margin-top: 30px;
@@ -19,7 +20,7 @@ body {
 .form-title {
     text-align: center;
     margin-bottom: 30px; 
-    font-size: 24px;
+    font-size: 34px;
     font-weight: bold;
     color: #000;
 }
@@ -37,7 +38,7 @@ body {
     padding: 15px 15px;
     font-size: 15px;
     border-radius: 50%; 
-    background-color: #007bff;
+    background-color: #34495E; 
     color: white;
     border: none;
     cursor: pointer;
@@ -48,7 +49,7 @@ body {
 }
 
 .top-button:hover {
-    background-color: #0056b3;
+    background-color: #18222c;
 }
 
 #browse-btn {
@@ -110,52 +111,48 @@ body {
 .add-row-btn:hover {
     background-color: #218838;
 }
-.add-row-btn span {
-    margin-right: 10px;
-    font-size: 20px;
-}
-
-
-
-.button-container {
-    display: flex;
-    justify-content: space-between;
-}
 
 .add-row-btn, .remove-row-btn {
-    width: 48%;
-    padding: 10px;
-    margin-top: 15px;
-    font-size: 16px;
+    width: 50px;  
+    height: 50px;
+    padding: 0; 
+    font-size: 20px; 
     border: none;
-    border-radius: 20px;
+    border-radius: 50%; 
     cursor: pointer;
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    margin: 10px; 
+}
+
+.button-container {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
+
 .add-row-btn {
-    background-color: #28a745;
+    background-color: #48C9B0;
     color: white;
 }
 
 .add-row-btn:hover {
-    background-color: #218838;
+    background-color: #1ABC9C; 
 }
 
 .remove-row-btn {
-    background-color: #dc3545;
+    background-color: #E74C3C; 
     color: white;
 }
 
 .remove-row-btn:hover {
-    background-color: #c82333;
+    background-color: #C0392B; 
 }
 
-.add-row-btn span, .remove-row-btn span {
-    font-size: 20px;
-}
+
+
 
 #save-notification {
     position: fixed;
@@ -190,14 +187,14 @@ body {
     margin: 0 5px;
     font-size: 16px;
     border-radius: 5px;
-    background-color: #007bff;
+    background-color: #34495E;
     color: white;
     border: none;
     cursor: pointer;
 }
 
 .pagination-btn:hover {
-    background-color: #0056b3;
+    background-color: #18222c;
 }
 
 .pagination-numbers {
@@ -215,13 +212,73 @@ body {
 }
 
 .pagination-number.active {
-    background-color: #007bff;
+    background-color: #34495E;
     color: white;
 }
 
 .pagination-number:hover {
-    background-color: #0056b3;
+    background-color: #18222c;
     color: white;
+}
+
+.row input[type="text"] {
+    width: 28%;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    margin-right: 4%;
+}
+
+
+
+
+.row input[type="text"]:last-child {
+    width: 68%; 
+    margin-right: 0;
+    position: relative;
+    background-image: linear-gradient(to right, #000000, #34495E); 
+    background-size: 100% 100%; 
+    background-repeat: no-repeat;
+    transition: background-size 0.4s ease-in-out; 
+}
+
+.row input[type="text"]:last-child:hover {
+    background-size: 0 100%; 
+}
+
+.row input[type="text"]:first-child:hover + .priority-btn {
+    display: block; /* Show button on hover */
+}
+.row input[type="text"]:first-child {
+    width: 28%; /* Adjusted for 70-30 proportion */
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    margin-right: 4%;
+    position: relative;
+    transition: background-color 0.3s ease; /* Smooth transition for background color */
+}
+
+.priority-btn {
+    position: absolute;
+    right: -30px; /* Adjust position as needed */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    background-color: #3498db;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+}
+
+
+
+.priority-btn:hover {
+    background-color: #2980b9;
 }
 
 
