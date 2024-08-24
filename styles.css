@@ -247,38 +247,96 @@ body {
     background-size: 0 100%; 
 }
 
-.row input[type="text"]:first-child:hover + .priority-btn {
-    display: block; /* Show button on hover */
-}
-.row input[type="text"]:first-child {
-    width: 28%; /* Adjusted for 70-30 proportion */
+/* Existing styles */
+.row input[type="text"] {
+    width: 28%;
     padding: 10px;
     border-radius: 20px;
     border: 1px solid #ccc;
     font-size: 16px;
     margin-right: 4%;
-    position: relative;
-    transition: background-color 0.3s ease; /* Smooth transition for background color */
 }
 
-.priority-btn {
+.input-container {
+    position: relative;
+    width: 28%;
+    margin-right: 4%;
+    transition: background-color 0.3s ease;
+    border-radius: 20px; 
+    
+}
+
+
+.input-container input[type="text"] {
+    width: 83.5%;
+    padding: 10px;
+    padding-right: 40px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    background-color: transparent; 
+}
+
+.circle-button {
     position: absolute;
-    right: -30px; /* Adjust position as needed */
+    right: 5px;
     top: 50%;
     transform: translateY(-50%);
-    width: 20px;
-    height: 20px;
-    background-color: #3498db;
-    border: none;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
+    background-color: #48C9B0;
+    color: white;
+    border: none;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
-    display: none;
+    transition: opacity 0.3s ease, background-color 0.3s ease;
+    opacity: 0; 
+}
+
+.circle-button:hover {
+    background-color: #1ABC9C;
+}
+
+.input-container:hover .circle-button {
+    opacity: 1;
 }
 
 
-
-.priority-btn:hover {
-    background-color: #2980b9;
+.row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
 }
 
 
+.row .input-container {
+    background-color: transparent;
+}
+
+.row .input-container.priority-0 {
+    background-color: transparent;
+}
+
+.row .input-container.priority-1 {
+    background-color: rgba(255, 255, 0, 0.2); 
+}
+
+.row .input-container.priority-2 {
+    background-color: rgba(255, 165, 0, 0.2); 
+}
+
+.input-container.priority-1 .circle-button, 
+.input-container.priority-2 .circle-button {
+    opacity: 1; 
+}
+
+
+.row input[type="text"]:last-child {
+    width: 68%;
+    margin-right: 0;
+    background-color: white; /* Explicitly set to white or any desired color */
+}
