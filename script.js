@@ -91,6 +91,8 @@ document.getElementById('browse-btn').addEventListener('click', function() {
     document.getElementById('csvFileInput').click();
 });
 
+document.getElementById('clear-btn').addEventListener('click', clearState);
+
 document.getElementById('save-btn').addEventListener('click', function () {
     saveState(); 
     showSaveNotification(); 
@@ -111,10 +113,29 @@ function shuffleRows() {
     rowsArray.forEach(row => formRows.appendChild(row));
 
     saveState();
+    sortRowsByPriority();
     displayRows();
 }
 
 
+function sortRowsByPriority() {
+    const formRows = document.getElementById('form-rows');
+    const rowsArray = Array.from(formRows.children);
+
+    rowsArray.sort((a, b) => {
+        const priorityA = parseInt(a.querySelector('.input-container').dataset.priority);
+        const priorityB = parseInt(b.querySelector('.input-container').dataset.priority);
+
+        if (priorityA === 2 && priorityB !== 2) return -1;
+        if (priorityA !== 2 && priorityB === 2) return 1;
+        if (priorityA === 1 && priorityB !== 1) return 1;
+        if (priorityA !== 1 && priorityB === 1) return -1;
+        return 0;
+    });
+
+    formRows.innerHTML = '';
+    rowsArray.forEach(row => formRows.appendChild(row));
+}
 
 document.getElementById('csvFileInput').addEventListener('change', function (event) {
     const file = event.target.files[0];
@@ -138,29 +159,19 @@ function parseCSV(text) {
             const columns = row.split(',');
 
             if (columns.length >= 2) {
-                const newRow = document.createElement('div');
-                newRow.className = 'row';
-
-                const input1 = document.createElement('input');
-                input1.type = 'text';
-                input1.name = `input${index + 1}-1`;
-                input1.value = columns[0].trim(); 
-                const input2 = document.createElement('input');
-                input2.type = 'text';
-                input2.name = `input${index + 1}-2`;
-                input2.value = columns[1].trim(); 
-
-                newRow.appendChild(input1);
-                newRow.appendChild(input2);
+                const newRow = createNewRow(index + 1); // Use createNewRow to ensure consistent structure
+                const inputs = newRow.getElementsByTagName('input');
+                inputs[0].value = columns[0].trim();
+                inputs[1].value = columns[1].trim();
 
                 formRows.appendChild(newRow);
             }
         }
     });
-    displayRows(); 
+    sortRowsByPriority();
+    displayRows();
 }
 
-// Update the add row button event listener
 document.getElementById('add-row-btn').addEventListener('click', function () {
     const formRows = document.getElementById('form-rows');
     const newRow = createNewRow(formRows.children.length + 1);
@@ -190,7 +201,7 @@ function saveState() {
     for (let row of formRows.children) {
         const inputs = row.getElementsByTagName('input');
         const container = row.querySelector('.input-container');
-        const priority = parseInt(container.dataset.priority);
+        const priority = container ? parseInt(container.dataset.priority) || 0 : 0;
         if (inputs.length === 2) {
             data.push({
                 column1: inputs[0].value,
@@ -208,7 +219,7 @@ function loadState() {
     if (savedData) {
         const data = JSON.parse(savedData);
         const formRows = document.getElementById('form-rows');
-        formRows.innerHTML = ''; // Clear any existing rows
+        formRows.innerHTML = ''; 
 
         data.forEach((row, index) => {
             const newRow = createNewRow(index + 1, row.priority);
@@ -218,8 +229,11 @@ function loadState() {
 
             formRows.appendChild(newRow);
         });
+
+        sortRowsByPriority();
     }
 }
+
 
 
 function clearState() {
@@ -251,6 +265,7 @@ function addHoverEffect(inputContainer) {
 }
 
 let currentPriority = 0;
+
 function createNewRow(index, priority = 0) {
     const newRow = document.createElement('div');
     newRow.className = 'row';
@@ -298,15 +313,12 @@ function addPriorityClickHandler(button, container) {
 
 function getPrioritySymbol(priority) {
     switch(priority) {
-        case 0: return '○';
-        case 1: return '◔';
-        case 2: return '●';
-        default: return '○';
+        case 0: return '✔';
+        case 1: return '✗';
+        case 2: return '✔';
+        default: return '✔';
     }
 }
-
-
-
 
 
 function initializeHoverEffects() {
@@ -317,6 +329,49 @@ function initializeHoverEffects() {
 
 document.addEventListener('DOMContentLoaded', function() {
     loadState();
+    sortRowsByPriority();
     displayRows();
     initializeHoverEffects();
+    const darkModeButton = document.querySelector('.button-row button:nth-child(5)');
+    darkModeButton.addEventListener('click', toggleDarkMode);
+
+    const savedDarkMode = loadDarkModePreference();
+    applyDarkMode(savedDarkMode);
+});
+
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+}
+
+function saveDarkModePreference(isDarkMode) {
+    localStorage.setItem('darkMode', isDarkMode);
+}
+
+function loadDarkModePreference() {
+    return localStorage.getItem('darkMode') === 'true';
+}
+
+function applyDarkMode(isDarkMode) {
+    if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+    } else {
+        document.body.classList.remove('dark-mode');
+    }
+}
+
+function toggleDarkMode() {
+    const isDarkMode = document.body.classList.toggle('dark-mode');
+    saveDarkModePreference(isDarkMode);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const darkBtn = document.getElementById('dark-btn');
+    
+    darkBtn.addEventListener('click', () => {
+        if (darkBtn.textContent.trim() === 'Dark') {
+            darkBtn.textContent = 'Light';
+        } else {
+            darkBtn.textContent = 'Dark';
+        }
+    });
 });
