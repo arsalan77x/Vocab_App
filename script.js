@@ -93,10 +93,6 @@ document.getElementById('browse-btn').addEventListener('click', function() {
 
 document.getElementById('clear-btn').addEventListener('click', clearState);
 
-document.getElementById('save-btn').addEventListener('click', function () {
-    saveState(); 
-    showSaveNotification(); 
-});
 
 document.getElementById('shuffle-btn').addEventListener('click', shuffleRows);
 
@@ -375,3 +371,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+document.getElementById('save-btn').addEventListener('click', function () {
+    saveRowsToCSV();
+    showSaveNotification(); 
+});
+
+function saveRowsToCSV() {
+    const formRows = document.getElementById('form-rows');
+    let csvContent = "data:text/csv;charset=utf-8,";
+
+    // Iterate through each row to extract the values
+    for (let row of formRows.children) {
+        const inputs = row.getElementsByTagName('input');
+        if (inputs.length === 2) {
+            const rowValues = [inputs[0].value, inputs[1].value].map(value => `"${value.replace(/"/g, '""')}"`); // Escape quotes
+            csvContent += rowValues.join(",") + "\n";
+        }
+    }
+
+    // Create a link element to download the CSV file
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "vocab_data.csv");
+    document.body.appendChild(link);
+
+    link.click();
+    document.body.removeChild(link);
+}
