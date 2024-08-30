@@ -69,14 +69,7 @@ body {
     justify-content: space-between;
     margin-bottom: 15px;
 }
-.row input[type="text"] {
-    width: 48%; 
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-    margin-right: 4%;
-}
+
 
 .row input[type="text"]:last-child {
     margin-right: 0; 
@@ -194,15 +187,6 @@ body {
     color: white;
 }
 
-.row input[type="text"] {
-    width: 28%;
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-    margin-right: 4%;
-}
-
 
 
 
@@ -210,6 +194,7 @@ body {
     width: 68%; 
     margin-right: 0;
     position: relative;
+    border: 1px solid #ccc;
     background-image: linear-gradient(to right, #000000, #3c4752); 
     background-size: 100% 100%; 
     background-repeat: no-repeat;
@@ -217,6 +202,7 @@ body {
 }
 
 .row input[type="text"]:last-child:hover {
+    
     background-size: 0 100%; 
 }
 
@@ -224,30 +210,17 @@ body {
     width: 28%;
     padding: 10px;
     border-radius: 10px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-    margin-right: 4%;
-}
-
-.input-container {
-    position: relative;
-    width: 28%;
-    margin-right: 4%;
-    transition: background-color 0.3s ease;
-    border-radius: 10px; 
     
-}
-
-
-.input-container input[type="text"] {
-    width: 83.5%;
-    padding: 10px;
-    padding-right: 40px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
     font-size: 16px;
-    background-color: transparent; 
+    margin-right: 4%;
 }
+
+
+
+
+
+
+
 
 .circle-button {
     position: absolute;
@@ -316,23 +289,29 @@ body {
 
 .input-container {
     position: relative;
-    width: 28%;
+    width: 28%; 
     margin-right: 4%;
     transition: background-color 0.3s ease;
-    border-radius: 10px; 
-    
-}
-
-
-.input-container input[type="text"] {
-    width: 70%;
-    padding: 10px;
-    padding-right: 80px;
     border-radius: 10px;
     border: 1px solid #ccc;
-    font-size: 16px;
-    background-color: transparent; 
+    display: flex; 
+    align-items: center; 
+    overflow: hidden; 
 }
+
+.input-container input[type="text"] {
+    flex-grow: 1;
+    padding: 10px;
+    padding-right: 40px; 
+    font-size: 16px;
+    background-color: transparent;
+    border: none; 
+    outline: none; 
+    width: 100%; 
+    box-sizing: border-box; 
+}
+
+
 
 .circle-button {
     position: absolute;
