@@ -262,39 +262,6 @@ function addHoverEffect(inputContainer) {
 
 let currentPriority = 0;
 
-function createNewRow(index, priority = 0) {
-    const newRow = document.createElement('div');
-    newRow.className = 'row';
-
-    const input1Container = document.createElement('div');
-    input1Container.className = `input-container priority-${priority}`;
-    input1Container.dataset.priority = priority;
-
-    const input1 = document.createElement('input');
-    input1.type = 'text';
-    input1.name = `input${index}-1`;
-    input1.placeholder = `Input ${index}-1`;
-
-    const button1 = document.createElement('button');
-    button1.className = 'circle-button';
-    button1.innerHTML = getPrioritySymbol(priority);
-
-    input1Container.appendChild(input1);
-    input1Container.appendChild(button1);
-
-    const input2 = document.createElement('input');
-    input2.type = 'text';
-    input2.name = `input${index}-2`;
-    input2.placeholder = `Input ${index}-2`;
-
-    newRow.appendChild(input1Container);
-    newRow.appendChild(input2);
-
-    addHoverEffect(input1Container);
-    addPriorityClickHandler(button1, input1Container);
-
-    return newRow;
-}
 
 function addPriorityClickHandler(button, container) {
     button.addEventListener('click', () => {
@@ -381,16 +348,14 @@ function saveRowsToCSV() {
     const formRows = document.getElementById('form-rows');
     let csvContent = "data:text/csv;charset=utf-8,";
 
-    // Iterate through each row to extract the values
     for (let row of formRows.children) {
         const inputs = row.getElementsByTagName('input');
         if (inputs.length === 2) {
-            const rowValues = [inputs[0].value, inputs[1].value].map(value => `"${value.replace(/"/g, '""')}"`); // Escape quotes
+            const rowValues = [inputs[0].value, inputs[1].value].map(value => `"${value.replace(/"/g, '""')}"`); 
             csvContent += rowValues.join(",") + "\n";
         }
     }
 
-    // Create a link element to download the CSV file
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
@@ -399,4 +364,124 @@ function saveRowsToCSV() {
 
     link.click();
     document.body.removeChild(link);
+}
+
+function createNewRow(index, priority = 0) {
+    const newRow = document.createElement('div');
+    newRow.className = 'row';
+
+    const input1Container = document.createElement('div');
+    input1Container.className = `input-container priority-${priority}`;
+    input1Container.dataset.priority = priority;
+
+    const input1 = document.createElement('input');
+    input1.type = 'text';
+    input1.name = `input${index}-1`;
+    input1.placeholder = `Input ${index}-1`;
+
+    const dictionaryButton = document.createElement('button');
+    dictionaryButton.className = 'circle-button dictionary-button';
+    dictionaryButton.innerHTML = '📖'; 
+
+    const priorityButton = document.createElement('button');
+    priorityButton.className = 'circle-button priority-button';
+    priorityButton.innerHTML = getPrioritySymbol(priority);
+
+    input1Container.appendChild(input1);
+    input1Container.appendChild(dictionaryButton);
+    input1Container.appendChild(priorityButton);
+
+    const input2 = document.createElement('input');
+    input2.type = 'text';
+    input2.name = `input${index}-2`;
+    input2.placeholder = `Input ${index}-2`;
+
+    newRow.appendChild(input1Container);
+    newRow.appendChild(input2);
+
+    addHoverEffect(input1Container);
+    addPriorityClickHandler(priorityButton, input1Container);
+    addDictionaryClickHandler(dictionaryButton, input1);
+
+    return newRow;
+}
+
+function addDictionaryClickHandler(button, input) {
+    button.addEventListener('click', () => {
+        const word = input.value.trim();
+        if (word) {
+            fetchDefinition(word, input);
+        } else {
+            alert('Please enter a word to look up.');
+        }
+    });
+}
+
+function displayDefinition(word, meanings, phonetics) {
+    const overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    const popup = document.createElement('div');
+    popup.className = 'definition-popup';
+    let content = `<h2>${word}</h2>`;
+
+    // Display only the first available phonetic
+    if (phonetics && phonetics.length > 0) {
+        const firstPhonetic = phonetics.find(p => p.text || p.audio) || {};
+        content += `<div class="phonetics">`;
+        if (firstPhonetic.text) {
+            content += `<span>${firstPhonetic.text}</span>`;
+        }
+        if (firstPhonetic.audio) {
+            content += `
+                <button class="audio-button" onclick="playAudio('${firstPhonetic.audio}')">
+                    🔊
+                </button>`;
+        }
+        content += `</div>`;
+    }
+
+    meanings.forEach((meaning, index) => {
+        content += `<h3>${index + 1}. ${meaning.partOfSpeech}</h3>`;
+        content += `<p><strong>Definition:</strong> ${meaning.definitions[0].definition}</p>`;
+        if (meaning.definitions[0].example) {
+            content += `<p><strong>Example:</strong> "${meaning.definitions[0].example}"</p>`;
+        }
+    });
+
+    const exitButton = document.createElement('button');
+    exitButton.textContent = 'X';
+    exitButton.className = 'exit-button';
+    exitButton.onclick = () => {
+        document.body.removeChild(overlay);
+    };
+
+    popup.innerHTML = content;
+    popup.appendChild(exitButton);
+    overlay.appendChild(popup);
+    document.body.appendChild(overlay);
+}
+
+function playAudio(audioUrl) {
+    const audio = new Audio(audioUrl);
+    audio.play();
+}
+
+function fetchDefinition(word, input) {
+    const apiUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`;
+    fetch(apiUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Word not found');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const phonetics = data[0].phonetics;
+            const meanings = data[0].meanings.slice(0, 3); // Get up to 3 meanings
+            displayDefinition(word, meanings, phonetics);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Word not found or an error occurred.');
+        });
 }
