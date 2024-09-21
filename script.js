@@ -15,7 +15,6 @@ function displayRows() {
     for (let i = start; i < end; i++) {
         formRows[i].style.display = 'flex';
     }
-
     updatePagination(totalPages);
 }
 
@@ -144,7 +143,6 @@ document.getElementById('csvFileInput').addEventListener('change', function (eve
         reader.readAsText(file);
     }
 });
-
 function parseCSV(text) {
     const rows = text.split('\n');
     const formRows = document.getElementById('form-rows');
@@ -156,17 +154,19 @@ function parseCSV(text) {
 
             if (columns.length >= 2) {
                 const newRow = createNewRow(index + 1); // Use createNewRow to ensure consistent structure
-                const inputs = newRow.getElementsByTagName('input');
-                inputs[0].value = columns[0].trim();
-                inputs[1].value = columns[1].trim();
+                const textareas = newRow.getElementsByTagName('textarea'); // Get textarea elements
+                textareas[0].value = columns[0].trim();
+                textareas[1].value = columns[1].trim();
 
                 formRows.appendChild(newRow);
             }
         }
     });
+    saveState();
     sortRowsByPriority();
     displayRows();
 }
+
 
 document.getElementById('add-row-btn').addEventListener('click', function () {
     const formRows = document.getElementById('form-rows');
@@ -195,13 +195,13 @@ function saveState() {
     const data = [];
 
     for (let row of formRows.children) {
-        const inputs = row.getElementsByTagName('input');
+        const textareas = row.getElementsByTagName('textarea');
         const container = row.querySelector('.input-container');
         const priority = container ? parseInt(container.dataset.priority) || 0 : 0;
-        if (inputs.length === 2) {
+        if (textareas.length === 2) {
             data.push({
-                column1: inputs[0].value,
-                column2: inputs[1].value,
+                column1: textareas[0].value,
+                column2: textareas[1].value,
                 priority: priority
             });
         }
@@ -219,16 +219,18 @@ function loadState() {
 
         data.forEach((row, index) => {
             const newRow = createNewRow(index + 1, row.priority);
-            const inputs = newRow.getElementsByTagName('input');
-            inputs[0].value = row.column1;
-            inputs[1].value = row.column2;
+            const textareas = newRow.getElementsByTagName('textarea');
+            textareas[0].value = row.column1;
+            textareas[1].value = row.column2;
 
             formRows.appendChild(newRow);
         });
 
         sortRowsByPriority();
+        displayRows();
     }
 }
+
 
 
 
@@ -248,17 +250,6 @@ function showSaveNotification() {
 
 
 
-function addHoverEffect(inputContainer) {
-    const button = inputContainer.querySelector('.circle-button');
-    
-    inputContainer.addEventListener('mouseenter', () => {
-        button.style.opacity = '1';
-    });
-
-    inputContainer.addEventListener('mouseleave', () => {
-        button.style.opacity = '0';
-    });
-}
 
 let currentPriority = 0;
 
@@ -284,22 +275,19 @@ function getPrioritySymbol(priority) {
 }
 
 
-function initializeHoverEffects() {
-    const inputContainers = document.querySelectorAll('.input-container');
-    inputContainers.forEach(addHoverEffect);
-}
 
 
 document.addEventListener('DOMContentLoaded', function() {
     loadState();
     sortRowsByPriority();
     displayRows();
-    initializeHoverEffects();
+    updateExistingRows();
     const darkModeButton = document.querySelector('.button-row button:nth-child(5)');
     darkModeButton.addEventListener('click', toggleDarkMode);
 
     const savedDarkMode = loadDarkModePreference();
     applyDarkMode(savedDarkMode);
+    addClickListenersToExistingRows();
 });
 
 function toggleDarkMode() {
@@ -349,9 +337,9 @@ function saveRowsToCSV() {
     let csvContent = "data:text/csv;charset=utf-8,";
 
     for (let row of formRows.children) {
-        const inputs = row.getElementsByTagName('input');
-        if (inputs.length === 2) {
-            const rowValues = [inputs[0].value, inputs[1].value].map(value => `"${value.replace(/"/g, '""')}"`); 
+        const textareas = row.getElementsByTagName('textarea');
+        if (textareas.length === 2) {
+            const rowValues = [textareas[0].value, textareas[1].value].map(value => `"${value.replace(/"/g, '""')}"`); 
             csvContent += rowValues.join(",") + "\n";
         }
     }
@@ -366,45 +354,7 @@ function saveRowsToCSV() {
     document.body.removeChild(link);
 }
 
-function createNewRow(index, priority = 0) {
-    const newRow = document.createElement('div');
-    newRow.className = 'row';
 
-    const input1Container = document.createElement('div');
-    input1Container.className = `input-container priority-${priority}`;
-    input1Container.dataset.priority = priority;
-
-    const input1 = document.createElement('input');
-    input1.type = 'text';
-    input1.name = `input${index}-1`;
-    input1.placeholder = `Input ${index}-1`;
-
-    const dictionaryButton = document.createElement('button');
-    dictionaryButton.className = 'circle-button dictionary-button';
-    dictionaryButton.innerHTML = '📖'; 
-
-    const priorityButton = document.createElement('button');
-    priorityButton.className = 'circle-button priority-button';
-    priorityButton.innerHTML = getPrioritySymbol(priority);
-
-    input1Container.appendChild(input1);
-    input1Container.appendChild(dictionaryButton);
-    input1Container.appendChild(priorityButton);
-
-    const input2 = document.createElement('input');
-    input2.type = 'text';
-    input2.name = `input${index}-2`;
-    input2.placeholder = `Input ${index}-2`;
-
-    newRow.appendChild(input1Container);
-    newRow.appendChild(input2);
-
-    addHoverEffect(input1Container);
-    addPriorityClickHandler(priorityButton, input1Container);
-    addDictionaryClickHandler(dictionaryButton, input1);
-
-    return newRow;
-}
 
 function addDictionaryClickHandler(button, input) {
     button.addEventListener('click', () => {
@@ -484,4 +434,268 @@ function fetchDefinition(word, input) {
             console.error('Error:', error);
             alert('Word not found or an error occurred.');
         });
+}
+
+function createNewRow(index, priority = 0) {
+    const newRow = document.createElement('div');
+    newRow.className = 'row';
+
+    const input1Container = document.createElement('div');
+    input1Container.className = `input-container priority-${priority}`;
+    input1Container.dataset.priority = priority;
+
+    const textarea1 = document.createElement('textarea');
+    textarea1.name = `input${index}-1`;
+    textarea1.placeholder = `Input ${index}-1`;
+
+    const textarea2 = document.createElement('textarea');
+    textarea2.name = `input${index}-2`;
+    textarea2.className = "input-container";
+    textarea2.placeholder = `Input ${index}-2`;
+
+    // Hidden file input for image upload
+    const imageInput = document.createElement('input');
+    imageInput.type = 'file';
+    imageInput.accept = 'image/*';
+    imageInput.className = 'image-upload';
+    imageInput.style.display = 'none'; // Hide the default input
+    imageInput.addEventListener('change', handleImageUpload);
+
+    // Custom button to trigger file input
+    const imageUploadButton = createButton('🖼️', 'image-upload-btn circle-button', () => imageInput.click());
+
+    const removeButton = createButton('🗑️', 'remove-button circle-button', () => {
+        newRow.remove();  // Remove the current row
+        saveState();  // Save the new state after removal
+    });
+
+    const dictionaryButton = createButton('📖', 'dictionary-button circle-button');
+    const llmElaborateButton = createButton('💠', 'llm-elaborate-button circle-button');
+    const priorityButton = createButton(getPrioritySymbol(priority), 'priority-button circle-button');
+
+    // LLM Elaborate logic
+    llmElaborateButton.addEventListener('click', () => {
+        const rightCellTextarea = newRow.querySelector(`textarea[name="input${index}-2"]`);
+        const leftCellTextarea = newRow.querySelector(`textarea[name="input${index}-1"]`);
+        if (rightCellTextarea && leftCellTextarea) {
+            let left_right_text = "word" + leftCellTextarea.value + 'definition' + rightCellTextarea.value;
+            const text = 'This text is explanation for a word' + left_right_text +
+                ' provide 2 more example (used in a sentence) in the following format (do not say anything else besides the format below):\n' +
+                'Ex1: [example]\n' + 'Ex2: [example]\n';
+            callOpenAIAPI(text).then(response => {
+                const res = response;
+                let modifiedText = rightCellTextarea.value + '\n' + res;
+                rightCellTextarea.value = modifiedText;
+            });
+        }
+    });
+
+    input1Container.appendChild(textarea1);
+    input1Container.appendChild(removeButton);
+    input1Container.appendChild(dictionaryButton);
+    input1Container.appendChild(imageUploadButton);
+    input1Container.appendChild(imageInput);  // Add the hidden image input
+    input1Container.appendChild(llmElaborateButton);
+    input1Container.appendChild(priorityButton);
+
+    newRow.appendChild(input1Container);
+    newRow.appendChild(textarea2);
+
+    // Add event listeners for expanding rows
+    textarea1.addEventListener('click', () => toggleRowExpansion(newRow, 'left'));
+    textarea2.addEventListener('click', () => toggleRowExpansion(newRow, 'right'));
+
+    addPriorityClickHandler(priorityButton, input1Container);
+    addDictionaryClickHandler(dictionaryButton, textarea1);
+
+    return newRow;
+}
+
+// Helper function to create buttons
+function createButton(innerHTML, className, onClick) {
+    const button = document.createElement('button');
+    button.className = className;
+    button.innerHTML = innerHTML;
+    if (onClick) {
+        button.addEventListener('click', onClick);
+    }
+    return button;
+}
+
+
+
+function handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.className = 'uploaded-image';
+            event.target.parentElement.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function extractWordDefinitionExample(text) {
+    // Regular expressions to match the content after each keyword
+    const wordRegex = /word:\s*(.*?)(?=\s+definition:|\s*$)/i;
+    const definitionRegex = /definition:\s*(.*?)(?=\s+example:|\s*$)/i;
+    const exampleRegex = /example:\s*(.*)/i;
+
+    // Extract the contents using the regular expressions
+    const wordMatch = text.match(wordRegex);
+    const definitionMatch = text.match(definitionRegex);
+    const exampleMatch = text.match(exampleRegex);
+
+    // Get the matched groups or set to empty string if not found
+    const word = wordMatch ? wordMatch[1].trim() : '';
+    const definition = definitionMatch ? definitionMatch[1].trim() : '';
+    const example = exampleMatch ? exampleMatch[1].trim() : '';
+
+    // Create the strings
+    const wordString = `${word}`;
+    const definitionExampleString = `Definition: ${definition} \nExample: ${example}`;
+
+
+
+    // If you need to return them as an object or array
+    return { wordString, definitionExampleString };
+}
+
+
+
+
+document.getElementById('star-btn').addEventListener('click', function() {
+    const priority2Containers = document.querySelectorAll('.input-container.priority-2');
+    let textValues = [];
+    priority2Containers.forEach(container => {
+        const textarea = container.querySelector('textarea');
+        if (textarea) {
+            textValues.push(textarea.value.trim()); 
+        }
+    });
+    var resultString = 'Here are the list of words in my vocabulary practice list. ' + textValues.join(', ')  +
+    '.\nFirst Identify the overall difficulty of words that whether they are in beginner level, intermidiate or advanced.' +
+    'Then suggest a word in the same difficulty level.' +
+    'Your response should be in this format and only for the suggested word:\n' +
+    'word: [the word]\ndefinition: [definition]\nexample: [example]'
+   
+    callOpenAIAPI(resultString).then(response => {
+        const text = response;
+        const { wordString, definitionExampleString } = extractWordDefinitionExample(text);
+        console.log(wordString); 
+        console.log(definitionExampleString);
+        addExtractedRow(wordString, definitionExampleString);
+    });
+
+
+
+});
+
+function addExtractedRow(wordString, definitionExampleString) {
+    const formRows = document.getElementById('form-rows');
+    const newRow = createNewRow(formRows.children.length + 1);
+    const textareas = newRow.getElementsByTagName('textarea');
+    if (textareas.length === 2) {
+        textareas[0].value = wordString; 
+        textareas[1].value = definitionExampleString; 
+    }
+
+    formRows.appendChild(newRow);
+    saveState();
+}
+
+
+async function callOpenAIAPI(prompt) {
+    const apiKey = ""; // Replace with your OpenAI API key
+    const apiUrl = "https://api.openai.com/v1/chat/completions";
+    
+    const requestBody = {
+        model: "gpt-4o-mini-2024-07-18",
+        messages: [
+            { role: "system", content: "You are a helpful assistant." },
+            { role: "user", content: prompt }
+        ]
+    };
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${apiKey}`
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) {
+            throw new Error(`API request failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.choices[0].message.content;
+
+    } catch (error) {
+        console.error("Error calling OpenAI API:", error);
+        return null;
+    }
+}
+
+
+
+function toggleRowExpansion(row, side) {
+    const leftCell = row.querySelector('.input-container');
+
+    if (side === 'right' && !row.classList.contains('right-expanded')) {
+        row.classList.add('right-expanded');
+        leftCell.classList.add('disable-hover');
+    } else if (side === 'left' && row.classList.contains('right-expanded')) {
+        row.classList.remove('right-expanded');
+        leftCell.classList.remove('disable-hover'); 
+    }
+}
+
+
+function addClickListenersToExistingRows() {
+    const rows = document.querySelectorAll('.row');
+    rows.forEach(row => {
+        const leftTextarea = row.querySelector('.input-container textarea');
+        const rightTextarea = row.querySelector('textarea:last-child');
+        
+        leftTextarea.addEventListener('click', () => toggleRowExpansion(row, 'left'));
+        rightTextarea.addEventListener('click', () => toggleRowExpansion(row, 'right'));
+    });
+}
+
+function updateExistingRows() {
+    const rows = document.querySelectorAll('.row');
+    rows.forEach((row, index) => {
+        const leftCell = row.querySelector('.input-container');
+        const rightCell = row.querySelector('textarea:last-child');
+        const existingButtons = row.querySelectorAll('.circle-button');
+
+        // Move existing buttons to the left cell if they're not already there
+        existingButtons.forEach(button => {
+            if (button.parentElement !== leftCell) {
+                leftCell.appendChild(button);
+            }
+        });
+
+        // Add new buttons if they don't exist
+        if (!leftCell.querySelector('.remove-button')) {
+            leftCell.appendChild(createButton('🗑️', 'remove-button circle-button', () => {
+                row.remove();
+                saveState();
+            }));
+        }
+        if (!leftCell.querySelector('.llm-elaborate-button')) {
+            leftCell.appendChild(createButton('💠', 'llm-elaborate-button circle-button'));
+        }
+
+        // Update event listeners
+        leftCell.querySelector('textarea').addEventListener('click', () => toggleRowExpansion(row, 'left'));
+        rightCell.addEventListener('click', () => toggleRowExpansion(row, 'right'));
+    });
 }

@@ -1,7 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Ubuntu);
 body {
     font-family: 'Ubuntu';
-
     justify-content: center;
     align-items: center;
     height: 100vh;
@@ -25,8 +24,6 @@ body {
     font-weight: bold;
     color: #000;
 }
-
-
 
 .button-row {
     display: flex;
@@ -52,6 +49,18 @@ body {
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     background-color: #fff;
+}
+
+.row textarea {
+    resize: vertical; /* Allow only vertical resizing */
+    width: 100%; /* Adjust width as needed */
+    padding: 10px;
+    border-radius: 10px;
+    outline: none;
+    border: none;
+    background: transparent;
+    font-size: 16px;
+    box-sizing: border-box; /* Include padding in the total width */
 }
 
 
@@ -221,34 +230,11 @@ body {
 
 
 
-
-.circle-button {
-    position: absolute;
-    right: 5px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background-color: #48C9B0;
-    color: white;
-    border: none;
-    font-size: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: opacity 0.3s ease, background-color 0.3s ease;
-    opacity: 0; 
-}
-
 .circle-button:hover {
     background-color: #1ABC9C;
 }
 
-.input-container:hover .circle-button {
-    opacity: 1;
-}
+
 
 
 .row {
@@ -260,6 +246,20 @@ body {
 
 .row .input-container {
     background-color: transparent;
+}
+.input-container {
+    position: relative;
+    width: 28%; 
+    margin-right: 4%;
+    transition: background-color 0.3s ease;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    display: flex; 
+    align-items: center; 
+    overflow: hidden; 
+    justify-content: space-around; 
+    border: none; 
+    
 }
 
 .row .input-container.priority-0 {
@@ -274,10 +274,6 @@ body {
     background-color: rgba(255, 0, 51, 0.126); 
 }
 
-.input-container.priority-1 .circle-button, 
-.input-container.priority-2 .circle-button {
-    opacity: 1; 
-}
 
 
 .row input[type="text"]:last-child {
@@ -287,16 +283,100 @@ body {
 }
 
 
-.input-container {
-    position: relative;
-    width: 28%; 
-    margin-right: 4%;
-    transition: background-color 0.3s ease;
+
+
+.row textarea:last-child {
+    resize: vertical; /* Allow vertical resizing */
+    width: 68%; /* Adjust width as needed */
+    padding: 10px;
     border-radius: 10px;
-    border: 1px solid #ccc;
-    display: flex; 
-    align-items: center; 
-    overflow: hidden; 
+    border: 1px solid #ccc; /* Add a border */
+    background-color: white; /* Original background */
+    
+    background-size: 100% 100%; 
+    background-repeat: no-repeat;
+    
+    transition: background-size 0.4s ease-in-out, background-color 0.4s ease; /* Add transition for hover effect */
+
+    color: #000; 
+    box-sizing: border-box; 
+}
+
+.row .input-container textarea:focus {
+    border: 1px solid #ddd; 
+}
+.row textarea:last-child:hover {
+    background-size: 0 100%; 
+    background-color: #ffffff; 
+}
+
+
+.image-upload-btn {
+    margin-left: 5px;
+    right: 75px;
+}
+
+
+
+.priority-button {
+    margin-left: 5px;
+    right: 5px;
+}
+
+
+
+
+/* Dark mode styling adjustments for left textareas */
+body.dark-mode .input-container textarea {
+    color: #f0f0f0; 
+    background: transparent; 
+}
+
+/* Dark mode styling for right textareas */
+body.dark-mode textarea:last-child {
+    color: #f0f0f0; /* Text color for dark mode */
+    background-color: #fff0; /* Transparent background for dark mode */
+}
+
+/* Adjust the circle button hover effect */
+.circle-button:hover {
+    background-color: #1ABC9C; /* Keep this as it is to show the button on hover */
+}
+
+/* Styles for the fixed star button */
+.star-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-color: #3e3e3e; /* Orange color for the button */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    transition: background-color 0.3s ease;
+}
+
+.star-button:hover {
+    background-color: #252525; /* Darker shade on hover */
+}
+
+
+/* Dark mode styling adjustments for left textareas */
+body.dark-mode .input-container textarea {
+    color: #f0f0f0; /* Text color for dark mode */
+    background: transparent; /* Ensure background remains transparent */
+}
+
+/* Dark mode styling for right textareas */
+body.dark-mode textarea:last-child {
+    color: #f0f0f0; /* Text color for dark mode */
+    background-color: #2d3748; /* Darker background for dark mode */
+    border-color: #718096; 
 }
 
 .input-container input[type="text"] {
@@ -322,7 +402,7 @@ body {
     color: white;
     border: none;
     font-size: 16px;
-    display: flex;
+    display: inline-block;
     justify-content: center;
     align-items: center;
     cursor: pointer;
@@ -336,11 +416,21 @@ body {
 
 .dictionary-button {
     right: 40px;
+    margin-left: 5px;
 }
 
-.priority-button {
-    right: 5px;
+.remove-button {
+    right: 145px;
+    margin-left: 5px;
 }
+
+
+.llm-elaborate-button {
+    right: 110px;
+    margin-left: 5px;
+}
+
+
 
 .input-container:hover .circle-button {
     opacity: 1;
@@ -584,5 +674,54 @@ body.dark-mode .exit-button {
 
 body.dark-mode .exit-button:hover {
     background-color: #c9302c;
+}
+
+body.dark-mode .row textarea:last-child:hover {
+    background-color: #3c3c3c;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.row .input-container,
+.row textarea:last-child {
+    transition: width 0.3s ease;
+}
+
+/* Default state (left expanded) */
+.row .input-container {
+    width: 95%;
+}
+
+.row textarea {
+    width: 100%;
+    resize: vertical;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.row textarea:last-child {
+    width: 5%;
+}
+
+/* Right expanded state */
+.row.right-expanded .input-container {
+    width: 5%;
+}
+
+.row.right-expanded textarea:last-child {
+    width: 95%;
+}
+
+.input-container.disable-hover .circle-button {
+    display: none; /* Hide buttons completely */
 }
 
